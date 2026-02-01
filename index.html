@@ -32,6 +32,7 @@ body {
     text-align: center;
 }
 
+/* LOCK SCREEN */
 #lock {
     background: rgba(255,255,255,0.08);
     backdrop-filter: blur(10px);
@@ -98,7 +99,7 @@ button:active {
     transform: scale(0.98);
 }
 
-
+/* BOOK CONTAINER */
 #bookContainer {
     display: none;
     animation: bookAppear 0.8s ease;
@@ -125,6 +126,7 @@ button:active {
     transform-style: preserve-3d;
 }
 
+/* BOOK SHADOW */
 .book::before {
     content: '';
     position: absolute;
@@ -138,6 +140,7 @@ button:active {
     z-index: -1;
 }
 
+/* PAGE */
 .page {
     position: absolute;
     top: 0;
@@ -151,6 +154,7 @@ button:active {
     user-select: none;
 }
 
+/* PAGE SIDES */
 .page-front,
 .page-back {
     position: absolute;
@@ -177,6 +181,7 @@ button:active {
     border-radius: 0;
 }
 
+/* COVER PAGE SPECIFIC */
 .page.cover .page-front {
     background-image: url('cover.png');
     background-size: cover;
@@ -192,9 +197,12 @@ button:active {
     border-radius: 0;
 }
 
+/* COVER TEXT */
 .cover-text {
-    display: none; 
+    display: none; /* Image already has the text */
+}
 
+/* PAGE CONTENT */
 .page-content {
     padding: 25px 20px 80px 20px;
     height: 100%;
@@ -219,6 +227,7 @@ button:active {
     margin-bottom: 10px;
 }
 
+/* PAGE NUMBER */
 .page-number {
     position: absolute;
     bottom: 20px;
@@ -227,12 +236,14 @@ button:active {
     color: #666;
     font-family: 'Poppins', sans-serif;
 }
-    
+
+/* FLIPPED STATE */
 .page.flipped {
     transform: rotateY(-180deg);
     pointer-events: none;
 }
 
+/* PAGE EDGE EFFECT */
 .page-front::after {
     content: '';
     position: absolute;
@@ -244,6 +255,7 @@ button:active {
     pointer-events: none;
 }
 
+/* NAVIGATION */
 .nav-hint {
     margin-top: 25px;
     font-size: 0.85rem;
@@ -255,7 +267,7 @@ button:active {
 }
 
 .nav-buttons {
-    display: none; 
+    display: none; /* Hidden - swipe only */
 }
 
 .nav-btn {
@@ -263,9 +275,10 @@ button:active {
 }
 
 .page-counter {
-    display: none; 
+    display: none; /* Hidden - swipe only */
 }
 
+/* SHINE EFFECT ON PAGE TURN */
 @keyframes pageShine {
     0% { opacity: 0; left: 0%; }
     50% { opacity: 0.2; left: 50%; }
@@ -291,18 +304,21 @@ button:active {
 
 <div class="container">
 
+<!-- LOCK SCREEN -->
 <div id="lock">
     <h2>For Lee Anne</h2>
     <p>Some stories need the right key 📖</p>
     <input type="password" id="password" placeholder="Enter password" autocomplete="off">
-    <button onclick="unlock()">Open</button>
+    <button onclick="unlock()">Open the story</button>
 </div>
 
+<!-- BOOK -->
 <div id="bookContainer">
     <div class="book-wrapper">
         <div class="book" id="book">
-            
-           <div class="page cover" data-page="0">
+
+            <!-- COVER -->
+            <div class="page cover" data-page="0">
                 <div class="page-front">
                     <div class="cover-text">For Lee Anne</div>
                 </div>
@@ -317,12 +333,12 @@ button:active {
                 </div>
             </div>
 
-            
+            <!-- PAGE 1 -->
             <div class="page" data-page="1">
                 <div class="page-front">
                     <div class="page-content">
                         <h3>Dear Lee Anne,</h3>
-                        <p>I hope you're doing well. There's something I wanted to tell you, and I thought the best way would be through something as special as you are.</p>
+                        <p>I hope this message finds you well. There's something I've been wanting to tell you, and I thought the best way would be through something as special as you are.</p>
                         <p>Do you remember when we first connected through your TikTok live? I was just another viewer in the crowd, but something about your presence made me want to know you better.</p>
                         <p>At first, I was hesitant. How do you tell someone you've never really talked to that they've captured your attention? But the more I watched your lives, the more I realized that you're someone genuinely worth knowing.</p>
                         <p>Your username "Keya" became something I'd look for every time I opened TikTok, hoping to catch you live again.</p>
@@ -331,34 +347,34 @@ button:active {
                 </div>
                 <div class="page-back">
                     <div class="page-content">
-                        
+                        <!-- Back of page 1 -->
                     </div>
                 </div>
             </div>
 
-            
+            <!-- PAGE 2 -->
             <div class="page" data-page="2">
                 <div class="page-front">
                     <div class="page-content">
                         <h3>Getting to Know You</h3>
-                        <p>Since then, I've found myself tuning in whenever you go live. Your your smile and the way you interact with everyone, it all drew me in. I looked forward to those moments, even if I was just quietly watching from the other side of the screen.</p>
+                        <p>Since then, I've found myself tuning in whenever you go live. Your energy, your smile, the way you interact with everyone, it all drew me in. I looked forward to those moments, even if I was just quietly watching from the other side of the screen.</p>
                         <p>And then I saw you in person. I was nervous, but the moment I did, everything I felt was confirmed. You're not just pretty on camera. You're genuinely beautiful, inside and out. Your angelic smile, your decent and kind demeanor, it all made my heart skip a beat.</p>
                         <div class="page-number">2</div>
                     </div>
                 </div>
                 <div class="page-back">
                     <div class="page-content">
-                        
+                        <!-- Back of page 2 -->
                     </div>
                 </div>
             </div>
 
-            
+            <!-- PAGE 3 -->
             <div class="page" data-page="3">
                 <div class="page-front">
                     <div class="page-content">
                         <h3>My Confession</h3>
-                        <p>Keya, I created this for you because I wanted to tell you that I have a crush on you. It's more than just admiration. It's the kind of feeling that makes me smile when I think of you, that makes me hope you're doing well, that makes me want to know you even more.</p>
+                        <p>Lee Anne, I created this for you because I wanted to tell you something important: I have a crush on you. It's more than just admiration. It's the kind of feeling that makes me smile when I think of you, that makes me hope you're doing well, that makes me want to know you even more.</p>
                         <p>I don't know what the future holds, but I know that I had to be honest with you. You deserve to know how someone feels about you, especially when those feelings are as genuine as mine.</p>
                         <p style="text-align: center; margin-top: 30px; font-style: italic; text-indent: 0;">With admiration and sincerity,<br>Jayson</p>
                         <div class="page-number">3</div>
@@ -366,7 +382,7 @@ button:active {
                 </div>
                 <div class="page-back">
                     <div class="page-content">
-                        
+                        <!-- Back cover -->
                     </div>
                 </div>
             </div>
@@ -374,6 +390,7 @@ button:active {
         </div>
     </div>
 
+    <!-- NAVIGATION -->
     <div class="nav-buttons">
         <button class="nav-btn" id="prevBtn" onclick="prevPage()">← Previous</button>
         <button class="nav-btn" id="nextBtn" onclick="nextPage()">Next →</button>
@@ -400,6 +417,7 @@ let startX = 0;
 let startY = 0;
 let isAnimating = false;
 
+// UNLOCK FUNCTION
 function unlock() {
     if (password.value !== correctPassword) {
         password.style.borderColor = "#ef4444";
@@ -415,7 +433,7 @@ function unlock() {
     lock.style.display = "none";
     bookContainer.style.display = "block";
     
-    
+    // Initialize pages - set z-index for proper stacking
     pages.forEach((page, i) => {
         page.style.zIndex = pages.length - i;
     });
@@ -423,11 +441,12 @@ function unlock() {
     updateNavigation();
 }
 
-
+// Allow Enter key to unlock
 password.addEventListener("keypress", (e) => {
     if (e.key === "Enter") unlock();
 });
 
+// NEXT PAGE
 function nextPage() {
     if (isAnimating || currentPage >= pages.length - 1) return;
     
@@ -445,6 +464,7 @@ function nextPage() {
     }, 800);
 }
 
+// PREVIOUS PAGE
 function prevPage() {
     if (isAnimating || currentPage <= 0) return;
     
@@ -462,13 +482,14 @@ function prevPage() {
     }, 800);
 }
 
-
+// UPDATE NAVIGATION
 function updateNavigation() {
     prevBtn.disabled = currentPage === 0;
     nextBtn.disabled = currentPage === pages.length - 1;
     pageCounter.textContent = `Page ${currentPage} of ${pages.length - 1}`;
 }
 
+// TOUCH GESTURES (SWIPE ONLY)
 book.addEventListener("touchstart", (e) => {
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
@@ -482,6 +503,7 @@ book.addEventListener("touchend", (e) => {
     const diffX = startX - endX;
     const diffY = Math.abs(startY - endY);
     
+    // Only trigger if horizontal swipe is stronger than vertical
     if (Math.abs(diffX) > 60 && Math.abs(diffX) > diffY * 2) {
         if (diffX > 0) {
             nextPage();
