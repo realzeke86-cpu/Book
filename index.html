@@ -160,6 +160,11 @@ button:active {
     width: 100%;
     aspect-ratio: 5/7;
     transform-style: preserve-3d;
+    cursor: grab;
+}
+
+.book.grabbing {
+    cursor: grabbing;
 }
 
 /* BOOK SHADOW */
@@ -441,7 +446,7 @@ button:active {
         <button class="nav-btn" id="nextBtn" onclick="nextPage()">Next →</button>
     </div>
     <div class="page-counter" id="pageCounter">Page 0 of 3</div>
-    <div class="nav-hint">Swipe left or right to turn pages</div>
+    <div class="nav-hint">Swipe or drag to turn pages</div>
 </div>
 
 </div>
@@ -462,6 +467,7 @@ let currentPage = 0;
 let startX = 0;
 let startY = 0;
 let isAnimating = false;
+let isDragging = false;
 
 // UNLOCK FUNCTION
 function unlock() {
@@ -492,9 +498,7 @@ function unlock() {
             bookContainer.style.display = "block";
             
             // Initialize pages - set z-index for proper stacking
-            pages.forEach((page, i) => {
-                page.style.zIndex = pages.length - i;
-            });
+            updateZIndex();
             
             updateNavigation();
         }, 800);
@@ -507,9 +511,7 @@ function unlock() {
             loadingScreen.style.display = "none";
             bookContainer.style.display = "block";
             
-            pages.forEach((page, i) => {
-                page.style.zIndex = pages.length - i;
-            });
+            updateZIndex();
             
             updateNavigation();
         }, 1000);
@@ -522,13 +524,24 @@ function unlock() {
             loadingScreen.style.display = "none";
             bookContainer.style.display = "block";
             
-            pages.forEach((page, i) => {
-                page.style.zIndex = pages.length - i;
-            });
+            updateZIndex();
             
             updateNavigation();
         }
     }, 3000);
+}
+
+// Update z-index based on current page
+function updateZIndex() {
+    pages.forEach((page, i) => {
+        if (i < currentPage) {
+            // Flipped pages go to the back
+            page.style.zIndex = i;
+        } else {
+            // Unflipped pages stack from back to front
+            page.style.zIndex = pages.length - i;
+        }
+    });
 }
 
 // Allow Enter key to unlock
@@ -542,6 +555,7 @@ function nextPage() {
     
     isAnimating = true;
     const page = pages[currentPage];
+    
     page.classList.add("turning");
     page.classList.add("flipped");
     
@@ -549,6 +563,7 @@ function nextPage() {
     
     setTimeout(() => {
         page.classList.remove("turning");
+        updateZIndex();
         isAnimating = false;
         updateNavigation();
     }, 800);
@@ -562,11 +577,13 @@ function prevPage() {
     currentPage--;
     
     const page = pages[currentPage];
+    
     page.classList.add("turning");
     page.classList.remove("flipped");
     
     setTimeout(() => {
         page.classList.remove("turning");
+        updateZIndex();
         isAnimating = false;
         updateNavigation();
     }, 800);
@@ -579,14 +596,15 @@ function updateNavigation() {
     pageCounter.textContent = `Page ${currentPage} of ${pages.length - 1}`;
 }
 
-// TOUCH GESTURES (SWIPE ONLY)
+// TOUCH GESTURES (SWIPE)
 book.addEventListener("touchstart", (e) => {
+    if (isAnimating) return;
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
 }, { passive: true });
 
 book.addEventListener("touchend", (e) => {
-    if (isAnimating) return;
+    if (isAnimating || isDragging) return;
     
     const endX = e.changedTouches[0].clientX;
     const endY = e.changedTouches[0].clientY;
@@ -600,6 +618,63 @@ book.addEventListener("touchend", (e) => {
         } else {
             prevPage();
         }
+    }
+});
+
+// MOUSE DRAG GESTURES (for laptop)
+book.addEventListener("mousedown", (e) => {
+    if (isAnimating) return;
+    // Prevent default to avoid text selection while dragging
+    e.preventDefault();
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    book.classList.add("grabbing");
+});
+
+document.addEventListener("mousemove", (e) => {
+    if (!isDragging || isAnimating) return;
+    
+    // Optional: Add visual feedback during drag
+    const currentX = e.clientX;
+    const diff = startX - currentX;
+    
+    // You could add a slight tilt effect here if desired
+    // For now, we just track the movement
+});
+
+document.addEventListener("mouseup", (e) => {
+    if (!isDragging) return;
+    
+    const wasDragging = isDragging;
+    isDragging = false;
+    book.classList.remove("grabbing");
+    
+    if (isAnimating || !wasDragging) return;
+    
+    const endX = e.clientX;
+    const endY = e.clientY;
+    const diffX = startX - endX;
+    const diffY = Math.abs(startY - endY);
+    
+    // Only trigger if horizontal drag is stronger than vertical
+    // and the drag distance is significant (at least 60px)
+    if (Math.abs(diffX) > 60 && Math.abs(diffX) > diffY * 2) {
+        if (diffX > 0) {
+            // Dragged left - go to next page
+            nextPage();
+        } else {
+            // Dragged right - go to previous page
+            prevPage();
+        }
+    }
+});
+
+// Reset dragging state if mouse leaves the window
+document.addEventListener("mouseleave", () => {
+    if (isDragging) {
+        isDragging = false;
+        book.classList.remove("grabbing");
     }
 });
 </script>
