@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Lee Anne</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1b0f1f, #3a1c3f);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+    padding: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* TABLE SCENE */
+#tableScene {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('table.jpg');
+    background-size: 100% auto;
+    background-position: center center;
+    background-repeat: no-repeat;
+    display: none;
+    z-index: 1;
+}
+
+/* Mobile optimization for table - fit width only in portrait */
+@media (max-width: 768px) and (orientation: portrait) {
+    #tableScene {
+        background-size: 100% auto;
+        background-position: center center;
+    }
+    
+    body {
+        overflow: hidden;
+    }
+}
+
+#tableScene::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.5) 100%);
+}
+
+.container {
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    z-index: 10;
+}
+
+/* BOOK ON TABLE (ZOOMED OUT) */
+.book-on-table {
+    position: fixed !important;
+    top: 50% !important;
+    left: 40% !important;
+    transform: translate(-50%, -50%) scale(0.45) rotate(-8deg) !important;
+    transform-origin: center center;
+    z-index: 5;
+    cursor: pointer;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: none !important;
+}
+
+.book-on-table .book-wrapper {
+    width: 340px;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
+    transition: filter 0.6s ease;
+}
+
+.book-on-table:hover {
+    transform: translate(-50%, -50%) scale(0.48) rotate(-8deg) !important;
+}
+
+.book-on-table.zoom-hint {
+    animation: pulseGlow 2s ease-in-out infinite !important;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { 
+        filter: drop-shadow(0 0 20px rgba(255, 212, 244, 0.5));
+    }
+    50% { 
+        filter: drop-shadow(0 0 40px rgba(255, 212, 244, 0.8));
+    }
+}
+
+/* Mobile adjustments for book on table */
+@media (max-width: 768px) and (orientation: portrait) {
+    .book-on-table {
+        left: 38% !important;
+        transform: translate(-50%, -50%) scale(0.35) rotate(-10deg) !important;
+    }
+    
+    .book-on-table:hover {
+        transform: translate(-50%, -50%) scale(0.37) rotate(-10deg) !important;
+    }
+    
+    .book-on-table .book-wrapper {
+        width: 280px;
+    }
+}
+
+/* Mobile adjustments for zoomed in book */
+@media (max-width: 768px) and (orientation: portrait) {
+    #bookContainer.zoomed-in .book-wrapper {
+        width: 320px;
+        max-width: 85vw;
+    }
+    
+    #bookContainer.zooming-in .book-wrapper {
+        width: 280px;
+    }
+    
+    #bookContainer.zooming-out .book-wrapper {
+        width: 280px;
+    }
+    
+    @keyframes moveFromTable {
+        0% {
+            top: 50%;
+            left: 38%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+        }
+        100% {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: none;
+        }
+    }
+    
+    @keyframes growAndStraighten {
+        0% {
+            transform: scale(0.35) rotate(-10deg);
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
+        }
+        100% {
+            transform: scale(1) rotate(0deg);
+            filter: none;
+        }
+    }
+    
+    @keyframes moveToTable {
+        0% {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: none;
+        }
+        100% {
+            top: 50%;
+            left: 38%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+        }
+    }
+    
+    @keyframes shrinkAndRotate {
+        0% {
+            transform: scale(1) rotate(0deg);
+            filter: none;
+        }
+        100% {
+            transform: scale(0.35) rotate(-10deg);
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
+        }
+    }
+}
+
+/* ZOOMED IN STATE */
+#bookContainer.zoomed-in {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    z-index: 100;
+    transform: none !important;
+}
+
+#bookContainer.zoomed-in .book-wrapper {
+    width: 340px;
+    max-width: 90vw;
+    filter: none;
+}
+
+/* Zoom in state - animates book from table to reading position */
+#bookContainer.zooming-in {
+    position: fixed !important;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    animation: moveFromTable 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    will-change: top, left, width, height;
+}
+
+#bookContainer.zooming-in .book-wrapper {
+    animation: growAndStraighten 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    will-change: transform, filter;
+}
+
+/* Zoom out state - animates book back to table position */
+#bookContainer.zooming-out {
+    position: fixed !important;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    animation: moveToTable 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    will-change: top, left, width, height;
+}
+
+#bookContainer.zooming-out .book-wrapper {
+    width: 340px;
+    max-width: 90vw;
+    animation: shrinkAndRotate 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    will-change: transform, filter;
+}
+
+@keyframes moveFromTable {
+    0% {
+        top: 50%;
+        left: 40%;
+        width: auto;
+        height: auto;
+        transform: translate(-50%, -50%);
+    }
+    100% {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transform: none;
+    }
+}
+
+@keyframes growAndStraighten {
+    0% {
+        transform: scale(0.45) rotate(-8deg);
+        filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        filter: none;
+    }
+}
+
+@keyframes moveToTable {
+    0% {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transform: none;
+    }
+    100% {
+        top: 50%;
+        left: 40%;
+        width: auto;
+        height: auto;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes shrinkAndRotate {
+    0% {
+        transform: scale(1) rotate(0deg);
+        filter: none;
+    }
+    100% {
+        transform: scale(0.45) rotate(-8deg);
+        filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
+    }
+}
+
+/* Blur overlay for zoomed in state */
+#tableScene.blurred {
+    filter: blur(15px);
+    opacity: 0.6;
+}
+
+/* Mobile adjustments for zoomed in book */
+@media (max-width: 768px) and (orientation: portrait) {
+    #bookContainer.zoomed-in .book-wrapper {
+        width: 320px;
+        max-width: 85vw;
+    }
+}
+
+/* LOADING SCREEN */
+#loadingScreen {
+    display: none;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 50px 25px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    animation: fadeIn 0.6s ease;
+}
+
+#loadingScreen.show {
+    display: block;
+}
+
+.loader {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top: 4px solid #ffd4f4;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    font-size: 1rem;
+    color: #ffd4f4;
+    opacity: 0.8;
+}
+
+/* LOCK SCREEN */
+#lock {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px 25px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#lock h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #ffd4f4;
+}
+
+#lock p {
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+}
+
+input, button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+}
+
+input {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    margin-bottom: 15px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+input::placeholder {
+    color: rgba(255,255,255,0.5);
+}
+
+input:focus {
+    outline: none;
+    background: rgba(255,255,255,0.2);
+    border-color: #ffd4f4;
+}
+
+button {
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    color: #fff;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* BOOK CONTAINER */
+#bookContainer {
+    display: none;
+    animation: bookAppear 0.8s ease;
+}
+
+#bookContainer.book-on-table {
+    display: block;
+}
+
+@keyframes bookAppear {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.book-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+    perspective: 2000px;
+    padding: 20px 0;
+}
+
+/* Prevent default book wrapper behavior when on table */
+.book-on-table .book-wrapper {
+    padding: 0;
+}
+
+.book {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 5/7;
+    transform-style: preserve-3d;
+}
+
+/* BOOK SHADOW */
+.book::before {
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 20px;
+    background: radial-gradient(ellipse, rgba(0,0,0,0.4), transparent);
+    filter: blur(10px);
+    z-index: -1;
+}
+
+/* PAGE */
+.page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-origin: left center;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+    cursor: pointer;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* PAGE SIDES */
+.page-front,
+.page-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    overflow: hidden;
+}
+
+.page-front {
+    background: linear-gradient(135deg, #fff5f9, #ffe4f0, #fff0f8);
+    transform: rotateY(0deg);
+    border-radius: 0;
+    box-shadow: 
+        2px 0 5px rgba(0,0,0,0.15),
+        inset -1px 0 2px rgba(0,0,0,0.05);
+}
+
+.page-back {
+    background: linear-gradient(135deg, #fff5f9, #ffe4f0, #fff0f8);
+    transform: rotateY(180deg);
+    border-radius: 0;
+}
+
+/* COVER PAGE SPECIFIC */
+.page.cover .page-front {
+    background-image: url('cover.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 0;
+    box-shadow: 
+        0 4px 15px rgba(0,0,0,0.3),
+        inset 0 0 0 1px rgba(255,255,255,0.1);
+}
+
+.page.cover .page-back {
+    border-radius: 0;
+}
+
+/* COVER TEXT */
+.cover-text {
+    display: none; /* Image already has the text */
+}
+
+/* PAGE CONTENT */
+.page-content {
+    padding: 25px 20px 80px 20px;
+    height: 100%;
+    overflow-y: auto;
+    font-family: 'Playfair Display', serif;
+    color: #000000;
+    position: relative;
+}
+
+.page-content h3 {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    color: #000000;
+    text-align: center;
+}
+
+.page-content p {
+    font-size: 0.7rem;
+    line-height: 1.4;
+    text-align: justify;
+    text-indent: 1.2em;
+    margin-bottom: 8px;
+}
+
+/* PAGE NUMBER */
+.page-number {
+    position: absolute;
+    bottom: 20px;
+    right: 25px;
+    font-size: 0.7rem;
+    color: #666;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* FLIPPED STATE */
+.page.flipped {
+    transform: rotateY(-180deg);
+    pointer-events: none;
+}
+
+/* PAGE EDGE EFFECT */
+.page-front::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0,0,0,0.1), transparent);
+    pointer-events: none;
+}
+
+/* NAVIGATION - HIDDEN (SWIPE ONLY) */
+.nav-hint {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.85rem;
+    opacity: 0.7;
+    display: none;
+    text-align: center;
+    width: 100%;
+    padding: 0 20px;
+    z-index: 110;
+}
+
+#bookContainer.zoomed-in .nav-hint {
+    display: block;
+}
+
+.nav-buttons {
+    display: none !important;
+}
+
+.nav-btn {
+    display: none !important;
+}
+
+.page-counter {
+    display: none !important;
+}
+
+/* SHINE EFFECT ON PAGE TURN */
+@keyframes pageShine {
+    0% { opacity: 0; left: 0%; }
+    50% { opacity: 0.2; left: 50%; }
+    100% { opacity: 0; left: 100%; }
+}
+
+.page.turning .page-front::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+    pointer-events: none;
+    animation: pageShine 0.8s ease;
+    z-index: 10;
+}
+</style>
+</head>
+
+<body>
+
+<!-- TABLE SCENE -->
+<div id="tableScene"></div>
+
+<!-- BACKGROUND MUSIC -->
+<audio id="bgMusic" loop>
+    <source src="LF.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container">
+
+<!-- LOCK SCREEN -->
+<div id="lock">
+    <h2>For Lee Anne</h2>
+    <p>Some stories need the right key 📖</p>
+    <input type="password" id="password" placeholder="Enter password" autocomplete="off">
+    <button onclick="unlock()">Open the story</button>
+</div>
+
+<!-- LOADING SCREEN -->
+<div id="loadingScreen">
+    <div class="loader"></div>
+    <div class="loading-text">Opening your story...</div>
+</div>
+
+<!-- BOOK -->
+<div id="bookContainer">
+    <div class="book-wrapper">
+        <div class="book" id="book">
+
+            <!-- COVER -->
+            <div class="page cover" data-page="0">
+                <div class="page-front">
+                    <div class="cover-text">For Lee Anne</div>
+                </div>
+                <div class="page-back">
+                    <div class="page-content">
+                        <div style="text-align: center; margin-top: 60px;">
+                            <p style="font-style: italic; font-size: 1.1rem; margin-bottom: 20px;">For Lee Anne Landicho</p>
+                            <p style="font-size: 0.95rem; opacity: 0.8;">A heartfelt confession from someone who admires you</p>
+                            <p style="margin-top: 80px; font-size: 1rem;">By: Jayson</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 1 -->
+            <div class="page" data-page="1">
+                <div class="page-front">
+                    <div class="page-content">
+                        <h3>Dear Lee Anne,</h3>
+                        <p>I hope you're doing well. I just wanted to tell you something and I thought the best way would be through something as special as you are.</p>
+                        <p>Do you remember when we first connected through your TikTok live? I was just another viewer in the crowd, but something about your presence made me want to know you better.</p>
+                        <p>At first, I was hesitant. How do you tell someone you've never really talked to that they've captured your attention? But the more I watched your lives, the more I realized that you're someone genuinely worth knowing.</p>
+                        <p>Your username "Keya" became something I'd look for every time I opened TikTok, hoping to catch you live again.</p>
+                        <div class="page-number">1</div>
+                    </div>
+                </div>
+                <div class="page-back">
+                    <div class="page-content">
+                        <!-- Back of page 1 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 2 -->
+            <div class="page" data-page="2">
+                <div class="page-front">
+                    <div class="page-content">
+                        <h3>Getting to Know You</h3>
+                        <p>Since then, I've found myself tuning in whenever you go live. Your smile and the way you interact with everyone, it all drew me in. I looked forward to those moments, even if I was just quietly watching from the other side of the screen.</p>
+                        <p>And then I saw you in person. I was nervous, but the moment I did, everything I felt was confirmed. You're not just pretty on camera. You're genuinely beautiful, inside and out. Your angelic smile, your decent and kind demeanor, it all made my heart skip a beat.</p>
+                        <p>There's something about the way you carry yourself that makes you stand out. You're kind to everyone, always respectful, and you have this grace that's so rare to find these days.</p>
+                        <p>Every time I see you, whether it's on screen or in person, I can't help but admire not just your beauty, but the person you are. You've become someone I genuinely care about.</p>
+                        <div class="page-number">2</div>
+                    </div>
+                </div>
+                <div class="page-back">
+                    <div class="page-content">
+                        <!-- Back of page 2 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 3 -->
+            <div class="page" data-page="3">
+                <div class="page-front">
+                    <div class="page-content">
+                        <h3>My Confession</h3>
+                        <p>Keya, I created this for you because I just wanted to say that I have a crush on you. It's more than just admiration. It's the kind of feeling that makes me smile when I think of you, that makes me hope you're doing well, that makes me want to know you even more.</p>
+                        <p>I don't know what the future holds, but I know that I had to be honest with you. You deserve to know how someone feels about you, especially when those feelings are as genuine as mine.</p>
+                        <p style="text-align: center; margin-top: 30px; font-style: italic; text-indent: 0;">With admiration and sincerity,<br>Jayson</p>
+                        <div class="page-number">3</div>
+                    </div>
+                </div>
+                <div class="page-back">
+                    <div class="page-content">
+                        <div style="text-align: center; margin-top: 120px;">
+                            <p style="font-size: 0.9rem; opacity: 0.7; text-indent: 0; margin-bottom: 15px;">~ The End ~</p>
+                            <p style="font-size: 0.75rem; opacity: 0.5; text-indent: 0; font-style: italic;">Written with heart by Jayson</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="nav-buttons">
+        <button class="nav-btn" id="prevBtn" onclick="prevPage()">← Previous</button>
+        <button class="nav-btn" id="nextBtn" onclick="nextPage()">Next →</button>
+    </div>
+    <div class="page-counter" id="pageCounter">Page 0 of 3</div>
+    <div class="nav-hint">Swipe left or right to turn pages</div>
+</div>
+
+</div>
+
+<script>
+const correctPassword = "keya";
+const lock = document.getElementById("lock");
+const bookContainer = document.getElementById("bookContainer");
+const loadingScreen = document.getElementById("loadingScreen");
+const password = document.getElementById("password");
+const pages = document.querySelectorAll(".page");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const pageCounter = document.getElementById("pageCounter");
+const book = document.getElementById("book");
+const bgMusic = document.getElementById("bgMusic");
+const tableScene = document.getElementById("tableScene");
+
+let currentPage = 0;
+let startX = 0;
+let startY = 0;
+let isAnimating = false;
+let isZoomedIn = false;
+
+// Function to play music
+function playBackgroundMusic() {
+    bgMusic.play().catch(error => {
+        console.log("Autoplay prevented. Music will play on first interaction.");
+        // Add one-time event listener for user interaction
+        const playOnInteraction = () => {
+            bgMusic.play();
+            document.removeEventListener('click', playOnInteraction);
+            document.removeEventListener('touchstart', playOnInteraction);
+        };
+        document.addEventListener('click', playOnInteraction);
+        document.addEventListener('touchstart', playOnInteraction);
+    });
+}
+
+// UNLOCK FUNCTION
+function unlock() {
+    if (password.value !== correctPassword) {
+        password.style.borderColor = "#ef4444";
+        password.value = "";
+        password.placeholder = "Wrong password, try again...";
+        setTimeout(() => {
+            password.style.borderColor = "transparent";
+            password.placeholder = "Enter password";
+        }, 2000);
+        return;
+    }
+
+    // Hide lock screen and show loading
+    lock.style.display = "none";
+    loadingScreen.classList.add("show");
+    
+    // Preload cover image
+    const coverImage = new Image();
+    coverImage.src = 'cover.png';
+    
+    coverImage.onload = function() {
+        // Hide loading screen and show table scene with book
+        setTimeout(() => {
+            loadingScreen.classList.remove("show");
+            loadingScreen.style.display = "none";
+            
+            // Show table scene first
+            tableScene.style.display = "block";
+            
+            // Then show book in proper position
+            bookContainer.style.display = "block";
+            
+            // Add classes after display is set to prevent positioning bug
+            setTimeout(() => {
+                bookContainer.classList.add("book-on-table", "zoom-hint");
+            }, 50);
+            
+            // Initialize pages - set z-index for proper stacking
+            pages.forEach((page, i) => {
+                page.style.zIndex = pages.length - i;
+            });
+            
+            updateNavigation();
+            
+            // Start background music
+            playBackgroundMusic();
+            
+            // Add click handler for zooming in
+            bookContainer.addEventListener('click', zoomIn);
+        }, 800);
+    };
+    
+    coverImage.onerror = function() {
+        // Hide loading screen even if image fails to load
+        setTimeout(() => {
+            loadingScreen.classList.remove("show");
+            loadingScreen.style.display = "none";
+            
+            // Show table scene first
+            tableScene.style.display = "block";
+            
+            // Then show book in proper position
+            bookContainer.style.display = "block";
+            
+            // Add classes after display is set to prevent positioning bug
+            setTimeout(() => {
+                bookContainer.classList.add("book-on-table", "zoom-hint");
+            }, 50);
+            
+            pages.forEach((page, i) => {
+                page.style.zIndex = pages.length - i;
+            });
+            
+            updateNavigation();
+            
+            // Start background music
+            playBackgroundMusic();
+            
+            // Add click handler for zooming in
+            bookContainer.addEventListener('click', zoomIn);
+        }, 1000);
+    };
+    
+    // Fallback: hide loading screen after 3 seconds max
+    setTimeout(() => {
+        if (loadingScreen.classList.contains("show")) {
+            loadingScreen.classList.remove("show");
+            loadingScreen.style.display = "none";
+            
+            // Show table scene first
+            tableScene.style.display = "block";
+            
+            // Then show book in proper position
+            bookContainer.style.display = "block";
+            
+            // Add classes after display is set to prevent positioning bug
+            setTimeout(() => {
+                bookContainer.classList.add("book-on-table", "zoom-hint");
+            }, 50);
+            
+            pages.forEach((page, i) => {
+                page.style.zIndex = pages.length - i;
+            });
+            
+            updateNavigation();
+            
+            // Start background music
+            playBackgroundMusic();
+            
+            // Add click handler for zooming in
+            bookContainer.addEventListener('click', zoomIn);
+        }
+    }, 3000);
+}
+
+// Allow Enter key to unlock
+password.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") unlock();
+});
+
+// NEXT PAGE
+function nextPage() {
+    if (isAnimating || currentPage >= pages.length - 1) return;
+    
+    isAnimating = true;
+    const page = pages[currentPage];
+    page.classList.add("turning");
+    page.classList.add("flipped");
+    
+    currentPage++;
+    
+    setTimeout(() => {
+        page.classList.remove("turning");
+        isAnimating = false;
+        updateNavigation();
+    }, 800);
+}
+
+// PREVIOUS PAGE
+function prevPage() {
+    if (isAnimating || currentPage <= 0) return;
+    
+    isAnimating = true;
+    currentPage--;
+    
+    const page = pages[currentPage];
+    page.classList.add("turning");
+    page.classList.remove("flipped");
+    
+    setTimeout(() => {
+        page.classList.remove("turning");
+        isAnimating = false;
+        updateNavigation();
+    }, 800);
+}
+
+// UPDATE NAVIGATION
+function updateNavigation() {
+    prevBtn.disabled = currentPage === 0;
+    nextBtn.disabled = currentPage === pages.length - 1;
+    pageCounter.textContent = `Page ${currentPage} of ${pages.length - 1}`;
+}
+
+// TOUCH GESTURES (SWIPE ONLY)
+book.addEventListener("touchstart", (e) => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+}, { passive: true });
+
+book.addEventListener("touchend", (e) => {
+    if (isAnimating) return;
+    
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    const diffX = startX - endX;
+    const diffY = Math.abs(startY - endY);
+    
+    // Only trigger if horizontal swipe is stronger than vertical
+    if (Math.abs(diffX) > 60 && Math.abs(diffX) > diffY * 2) {
+        if (diffX > 0) {
+            nextPage();
+        } else {
+            prevPage();
+        }
+    }
+});
+
+// ZOOM IN FUNCTION
+function zoomIn(e) {
+    if (isZoomedIn) return;
+    
+    // Prevent event from bubbling to document
+    if (e) e.stopPropagation();
+    
+    isZoomedIn = true;
+    bookContainer.classList.remove("book-on-table", "zoom-hint");
+    bookContainer.classList.add("zooming-in");
+    bookContainer.removeEventListener('click', zoomIn);
+    
+    // Blur table scene
+    tableScene.classList.add("blurred");
+    
+    // Wait for animation to complete
+    setTimeout(() => {
+        bookContainer.classList.remove("zooming-in");
+        bookContainer.classList.add("zoomed-in");
+        
+        // Enable page interactions
+        pages.forEach(page => {
+            page.style.pointerEvents = "auto";
+        });
+        
+        // Add click outside handler after a short delay
+        setTimeout(() => {
+            document.addEventListener('click', handleClickOutside);
+        }, 100);
+    }, 800);
+}
+
+// ZOOM OUT FUNCTION
+function zoomOut() {
+    if (!isZoomedIn) return;
+    
+    isZoomedIn = false;
+    
+    // Disable page interactions immediately
+    pages.forEach(page => {
+        page.style.pointerEvents = "none";
+    });
+    
+    // Remove click outside handler
+    document.removeEventListener('click', handleClickOutside);
+    
+    // Add zooming-out class for animation
+    bookContainer.classList.remove("zoomed-in");
+    bookContainer.classList.add("zooming-out");
+    
+    // Start removing blur from table
+    tableScene.classList.remove("blurred");
+    
+    // Wait for animation to complete before switching to table state
+    setTimeout(() => {
+        // Now switch to table state without animation
+        bookContainer.classList.remove("zooming-out");
+        bookContainer.style.display = "block";
+        bookContainer.classList.add("book-on-table", "zoom-hint");
+        
+        // Reset to cover page
+        pages.forEach((page, i) => {
+            if (i < currentPage) {
+                page.classList.remove("flipped");
+            }
+        });
+        currentPage = 0;
+        updateNavigation();
+        
+        // Re-enable click to zoom in after a short delay
+        setTimeout(() => {
+            bookContainer.addEventListener('click', zoomIn);
+        }, 100);
+    }, 800);
+}
+
+// Handle click outside book
+function handleClickOutside(e) {
+    if (!isZoomedIn) return;
+    
+    const bookWrapper = document.querySelector('.book-wrapper');
+    if (bookWrapper && !bookWrapper.contains(e.target)) {
+        zoomOut();
+    }
+}
+</script>
+
+</body>
+</html>
